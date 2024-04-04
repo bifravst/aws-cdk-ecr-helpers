@@ -13,9 +13,26 @@ export type ContainerRepository = {
 	name: string
 }
 
+export const repositoryName = ({
+	stackName,
+	id,
+}: {
+	stackName: string
+	id: string
+}): string => `${stackName}-${id}`
+
 export const getOrCreateRepository =
 	({ ecr }: { ecr: ECRClient }) =>
-	async (name: string, debug?: logFn): Promise<ContainerRepository> => {
+	async ({
+		stackName,
+		id,
+		debug,
+	}: {
+		stackName: string
+		id: string
+		debug?: logFn
+	}): Promise<ContainerRepository> => {
+		const name = repositoryName({ stackName, id })
 		try {
 			const result = await ecr.send(
 				new DescribeRepositoriesCommand({
