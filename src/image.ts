@@ -11,6 +11,7 @@ type logFn = (...args: string[]) => void
 export type ImageChecker = (args: {
 	tag: string
 	debug?: logFn
+	pull?: boolean
 }) => Promise<PersistedContainer | null>
 
 export type PersistedContainer = {
@@ -32,7 +33,7 @@ export const checkIfImageExists =
 		ecr: ECRClient
 		repo: ContainerRepository
 	}): ImageChecker =>
-	async ({ tag, debug }) => {
+	async ({ tag, pull, debug }) => {
 		debug?.(`Checking release image tag: ${tag} in ${repo.uri}...`)
 		try {
 			const result = await ecr.send(
@@ -46,6 +47,7 @@ export const checkIfImageExists =
 
 			if (exists) {
 				debug?.(`Image tag ${tag} exists in ${repo.uri}.`)
+				if (pull === true) await pullFromECR({ ecr, repo })(tag, debug)
 				return {
 					repo,
 					tag,
@@ -127,28 +129,7 @@ export const buildAndPublishImage =
 const pushToECR =
 	({ ecr, repo }: { ecr: ECRClient; repo: ContainerRepository }) =>
 	async (id: string, tag: string, debug?: logFn): Promise<void> => {
-		const tokenResult = await ecr.send(new GetAuthorizationTokenCommand({}))
-		const authorizationToken =
-			tokenResult?.authorizationData?.[0]?.authorizationToken
-		if (authorizationToken === undefined)
-			throw new Error(`Could not get authorizationToken!`)
-		const authToken = Buffer.from(authorizationToken, 'base64')
-			.toString()
-			.split(':')
-
-		debug?.(`Login to ECR`)
-		await run({
-			command: 'docker',
-			args: [
-				'login',
-				'--username',
-				authToken[0] ?? '',
-				'--password',
-				authToken[1] ?? '',
-				repo.uri,
-			],
-			log: { debug },
-		})
+		await auth(ecr, repo, debug)
 
 		// Tag in ECR format (one registry per container)
 		await run({
@@ -164,3 +145,44 @@ const pushToECR =
 			log: { debug },
 		})
 	}
+
+const pullFromECR =
+	({ ecr, repo }: { ecr: ECRClient; repo: ContainerRepository }) =>
+	async (tag: string, debug?: logFn): Promise<void> => {
+		await auth(ecr, repo, debug)
+
+		debug?.(`Pull image from ECR`)
+		await run({
+			command: 'docker',
+			args: ['pull', `${repo.uri}:${tag}`],
+			log: { debug },
+		})
+	}
+
+const auth = async (
+	ecr: ECRClient,
+	repo: ContainerRepository,
+	debug?: logFn,
+) => {
+	const tokenResult = await ecr.send(new GetAuthorizationTokenCommand({}))
+	const authorizationToken =
+		tokenResult?.authorizationData?.[0]?.authorizationToken
+	if (authorizationToken === undefined)
+		throw new Error(`Could not get authorizationToken!`)
+	const authToken = Buffer.from(authorizationToken, 'base64')
+		.toString()
+		.split(':')
+	debug?.(`Login to ECR`)
+	await run({
+		command: 'docker',
+		args: [
+			'login',
+			'--username',
+			authToken[0] ?? '',
+			'--password',
+			authToken[1] ?? '',
+			repo.uri,
+		],
+		log: { debug },
+	})
+}
