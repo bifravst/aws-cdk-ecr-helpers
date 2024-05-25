@@ -1,7 +1,7 @@
+import type { ECRClient } from '@aws-sdk/client-ecr'
 import {
 	CreateRepositoryCommand,
 	DescribeRepositoriesCommand,
-	ECRClient,
 	ImageTagMutability,
 	RepositoryNotFoundException,
 } from '@aws-sdk/client-ecr'
