@@ -1,6 +1,6 @@
+import type { ECRClient } from '@aws-sdk/client-ecr'
 import {
 	DescribeImagesCommand,
-	ECRClient,
 	GetAuthorizationTokenCommand,
 } from '@aws-sdk/client-ecr'
 import run from '@bifravst/run'
