@@ -37,9 +37,11 @@
     "@bifravst/prettier-config": "1.0.4",
     "@commitlint/config-conventional": "19.2.2",
     "@types/node": "20.14.10",
+    "cat": "*",
     "commitlint": "19.3.0",
     "husky": "9.0.11",
     "lint-staged": "15.2.7",
+    "package.json": "*",
     "tsx": "4.16.2"
   },
   "lint-staged": {
@@ -84,6 +86,8 @@
   "prettier": "@bifravst/prettier-config",
   "peerDependencies": {
     "@aws-sdk/client-ecr": "^3.614.0",
-    "@bifravst/run": "^1.2.0"
+    "@bifravst/run": "^1.2.0",
+    "cat": "^0.2.0",
+    "package.json": "^2.0.1"
   }
 }
