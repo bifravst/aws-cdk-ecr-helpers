@@ -1,22 +1,7 @@
 import { createHash } from 'node:crypto'
-import { createReadStream, readdirSync, statSync } from 'node:fs'
+import { readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
-
-const hashFile = async (file: string): Promise<string> => {
-	const hash = createHash('md5')
-	const content = createReadStream(file)
-
-	return new Promise((resolve, reject) => {
-		content.pipe(hash)
-		content
-			.on('close', () => {
-				return resolve(hash.digest('hex'))
-			})
-			.on('error', (error) => {
-				return reject(error)
-			})
-	})
-}
+import { hashFile } from './hashFile.js'
 
 const generateMd5ForFolder = async (
 	path: string,
