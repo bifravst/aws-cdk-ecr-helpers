@@ -83,7 +83,7 @@
   ],
   "prettier": "@bifravst/prettier-config",
   "peerDependencies": {
-    "@aws-sdk/client-ecr": "^3.677.0",
+    "@aws-sdk/client-ecr": "^3.678.0",
     "@bifravst/run": "^1.2.0"
   }
 }
