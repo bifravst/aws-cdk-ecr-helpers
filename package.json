@@ -39,7 +39,7 @@
     "@types/node": "22.18.11",
     "commitlint": "19.8.1",
     "husky": "9.1.7",
-    "lint-staged": "16.2.4",
+    "lint-staged": "16.2.5",
     "tsx": "4.20.6"
   },
   "lint-staged": {
