@@ -28,5 +28,4 @@ jobs:
         run: npx prettier -c ./
       - run: npm test
       - name: Semantic release
-        continue-on-error: true
         run: npx semantic-release
