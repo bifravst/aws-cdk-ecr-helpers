@@ -4,7 +4,7 @@ import {
 	GetAuthorizationTokenCommand,
 } from '@aws-sdk/client-ecr'
 import run from '@bifravst/run'
-import type { ContainerRepository } from './repository.js'
+import type { ContainerRepository } from './repository.ts'
 
 type logFn = (...args: string[]) => void
 

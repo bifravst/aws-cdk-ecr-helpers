@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
-import { hashFile } from './hashFile.js'
+import { hashFile } from './hashFile.ts'
 
 const generateMd5ForFolder = async (
 	path: string,

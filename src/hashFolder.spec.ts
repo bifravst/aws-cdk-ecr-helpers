@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import path from 'node:path'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
-import { hashFolder } from './hashFolder.js'
+import { hashFolder } from './hashFolder.ts'
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 void describe('hashFolder', () => {

@@ -2,9 +2,13 @@ name: Test and Release
 
 on: push
 
+permissions:
+  contents: write
+  id-token: write
+  issues: write
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   tests:
@@ -14,12 +18,11 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: "22.x"
+          node-version: ">=24.19.0 <25"
           cache: "npm"
+          registry-url: "https://registry.npmjs.org"
       - name: Install NPM version specified in package.json
         uses: ./.github/actions/install-npm
-      - name: Authenticate with NPM registry
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - name: Install dependencies
         run: npm ci --no-audit
       - name: Compile
